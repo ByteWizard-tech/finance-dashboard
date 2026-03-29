@@ -16,19 +16,18 @@ A full-stack personal finance dashboard with **AI-powered insights**, smart tran
 - 🔐 **JWT Authentication** — Secure login & registration with bcrypt password hashing
 - 💳 **Transaction Management** — Full CRUD with pagination, filtering, and sorting
 - 🎯 **Budget Tracking** — Set monthly limits per category with real-time progress bars
-- 📊 **Interactive Charts** — Pie (spending by category), Line (monthly trends), Bar (income vs expenses)
+- 📊 **Interactive Charts** — Donut (spending by category), Line (monthly trends), Bar (income vs expenses)
 
 ### AI-Powered ✨
-- 🧠 **Smart Categorization** — Auto-categorizes transactions using keyword-based ML engine (Swiggy → Food, Uber → Transport, etc.)
-- 📈 **Monthly Spending Comparison** — Analyzes current vs previous month with % change
+- 🧠 **Smart Categorization** — Auto-categorizes transactions using keyword-based ML engine
+- 📈 **Monthly Spending Comparison** — Current vs previous month with % change
 - 🏆 **Category Analysis** — Identifies highest/lowest spending categories
 - 🎉 **Behavioral Insights** — Weekend vs weekday spending patterns
 - 🚨 **Anomaly Detection** — Flags unusually large transactions (3x average)
 - 🔮 **Spending Forecast** — Predicts next month expenses based on 3-month average
-- ✅ **Trend Tracking** — Per-category % change vs previous month
 
 ### Design
-- 🌙 **Premium Dark Mode** — Glassmorphism cards, subtle gradients, smooth animations
+- 🌙 **Organic Dark Theme** — Clean, human-designed aesthetic with contour-line backgrounds
 - 📱 **Fully Responsive** — Works on desktop, tablet, and mobile
 - ⚡ **Fast & Modern** — Built with Vite for instant HMR and fast builds
 
@@ -40,33 +39,9 @@ A full-stack personal finance dashboard with **AI-powered insights**, smart tran
 |-------|-----------|
 | Frontend | React 19, Vite, Recharts, React Router |
 | Backend | Node.js, Express |
-| Database | SQLite (PostgreSQL-compatible schema) |
+| Database | SQLite (auto-created on first run) |
 | Auth | JWT + bcrypt |
 | Styling | Vanilla CSS with design tokens |
-
----
-
-## 📁 Project Structure
-
-```
-finance-dashboard/
-├── client/                  # React Frontend
-│   └── src/
-│       ├── components/      # Navbar, ProtectedRoute
-│       ├── context/         # AuthContext (JWT state)
-│       ├── pages/           # Dashboard, Transactions, Budgets, Login, Register
-│       ├── api.js           # API utility with auth headers
-│       ├── App.jsx          # Root component with routing
-│       └── index.css        # Design system
-├── server/                  # Express Backend
-│   ├── routes/              # auth, transactions, budgets, accounts, insights
-│   ├── services/            # categorizer, insights engine
-│   ├── middleware/          # JWT auth middleware
-│   ├── scripts/             # generateData.js (seed script)
-│   ├── db.js                # SQLite setup + schema
-│   └── server.js            # Express entry point
-└── docs/                    # Documentation
-```
 
 ---
 
@@ -79,7 +54,7 @@ finance-dashboard/
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/finance-dashboard.git
+git clone https://github.com/ByteWizard-tech/finance-dashboard.git
 cd finance-dashboard
 
 # Install backend dependencies
@@ -91,22 +66,32 @@ cd ../client
 npm install
 ```
 
-### 2. Seed the Database
+### 2. Set Up Environment
+
+```bash
+cd server
+cp .env.example .env
+# Edit .env and set your own JWT_SECRET
+```
+
+### 3. Seed Demo Data (Optional)
 
 ```bash
 cd server
 node scripts/generateData.js
 ```
 
-This creates 3 demo users with 200-500 realistic transactions each.
+This creates 3 demo users with 200–500 realistic transactions each.
 
-### 3. Start the App
+> **Note:** You can skip this step — the database and tables are created automatically when the server starts. You can register your own account on the sign-up page.
+
+### 4. Start the App
 
 **Terminal 1 — Backend:**
 ```bash
 cd server
 node server.js
-# 🚀 API running on http://localhost:5000
+# 🚀 API running on http://localhost:5001
 ```
 
 **Terminal 2 — Frontend:**
@@ -116,11 +101,36 @@ npm run dev
 # ⚡ App running on http://localhost:5173
 ```
 
-### 4. Login
+### 5. Use the App
+
+- **Register** a new account at `/register`, or
+- **Login** with demo credentials (if you ran the seed script):
+  ```
+  Email: omesh@demo.com
+  Password: password123
+  ```
+
+---
+
+## 📁 Project Structure
 
 ```
-Email: omesh@demo.com
-Password: password123
+finance-dashboard/
+├── client/                  # React Frontend
+│   └── src/
+│       ├── components/      # Navbar (SVG icons), ProtectedRoute
+│       ├── context/         # AuthContext (JWT state)
+│       ├── pages/           # Dashboard, Transactions, Budgets, Login, Register
+│       ├── api.js           # API utility with auth headers
+│       ├── App.jsx          # Root component with routing
+│       └── index.css        # Design system
+├── server/                  # Express Backend
+│   ├── routes/              # auth, transactions, budgets, accounts, insights
+│   ├── services/            # categorizer, insights engine
+│   ├── middleware/          # JWT auth middleware
+│   ├── scripts/             # generateData.js (seed script)
+│   ├── db.js                # SQLite setup + schema
+│   └── server.js            # Express entry point
 ```
 
 ---
@@ -157,38 +167,6 @@ Password: password123
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/insights` | Get AI-generated insights |
-
----
-
-## 🏗️ Architecture
-
-```
-┌─────────────┐     HTTP/JWT      ┌─────────────┐     SQL      ┌──────────┐
-│   React      │ ◄──────────────► │   Express    │ ◄──────────► │  SQLite  │
-│   Frontend   │                  │   Backend    │              │    DB    │
-│              │                  │              │              │          │
-│  • Recharts  │                  │  • Auth MW   │              │  Users   │
-│  • Router    │                  │  • Routes    │              │  Txns    │
-│  • AuthCtx   │                  │  • Services  │              │  Budgets │
-└─────────────┘                  └─────────────┘              └──────────┘
-                                       │
-                                 ┌─────┴─────┐
-                                 │  Services  │
-                                 │            │
-                                 │ Categorizer│
-                                 │ Insights   │
-                                 └────────────┘
-```
-
----
-
-## 🚀 Deployment
-
-| Service | Platform | Notes |
-|---------|----------|-------|
-| Backend | Render / Railway | Set env vars: `JWT_SECRET`, `DATABASE_URL` |
-| Database | Neon / Supabase | Migrate SQLite schema to PostgreSQL |
-| Frontend | Vercel | Set `VITE_API_URL` env var |
 
 ---
 
